@@ -27,3 +27,6 @@ penelope -i GTS.zip -j stardict -f tr -t tr -p mobi -o Guncel_Turkce_Sozluk.mobi
 <img src="https://github.com/anezih/gts_stardict_mobi/raw/main/img/screen_shot-25907.gif" width="300px">
 <img src="https://github.com/anezih/gts_stardict_mobi/raw/main/img/screen_shot-25904.gif" width="300px">
 </p>
+
+# TODO
+- Çekimlenen sözcüklerde sonuç dönmeyebilir. Örneğin `dürtüsü` bir sonuç döndürmeyecektir. Sözcüğün anlamına bakılabilmesi için kelimenin çekimsiz halinin (`dürtü`) elle aranması gerekmektedir. Bu sorunu çözmek için tüm headword'lerin potansiyel çekimlerinin üretilip StarDict'in `*.syn` dosyasına kaydedilmesi araştırılabilir, [bkz.](https://github.com/huzheng001/stardict-3/blob/96b96d89eab5f0ad9246c2569a807d6d7982aa84/dict/doc/StarDictFileFormat#L216) Sözcüklerin çekimli hallerinin üretilmesi için [Zemberek](https://github.com/ahmetaa/zemberek-nlp/tree/master/morphology#word-generation) projesinin word generation özelliği kullanılabilir.
