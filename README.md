@@ -1,7 +1,7 @@
 # Nedir?
 https://github.com/ogun/guncel-turkce-sozluk reposunda bulunuan TDK Güncel Türkçe Sözlük veri tabanını biçimlendirerek StarDict sözlüğün hazırlanması için gerekli tab-delimited dosyaya dönüştüren bir python betiği. Ayrıca bu dosyadan elde edilen StarDict sözlüğü ve Kindle ile uyumlu MOBI sözlük aşağıda sunulmuştur.
 
-StarDict arşivi: [Güncel Türkçe Sözlük](dicts/GTS.zip)
+StarDict arşivi: [Güncel Türkçe Sözlük](dicts/GTS.zip)  
 MOBI dosyası: [Güncel Türkçe Sözlük](dicts/Guncel_Turkce_Sozluk.mobi)
 
 Sözlüğü StarDict versiyonu KOReader üzerinde, MOBI versiyonu Kindle 4 üzerinde denenmiş, bariz bir soruna rastlanılmamıştır. Sözlüğe eklenen HTML tagları Kobo'nun kendi sözlük formatında düzgün görüntülenemediğinden sözlüğün dicthtml versiyonuna burada yer verilmemiştir.
@@ -20,4 +20,8 @@ penelope -i GTS.zip -j stardict -f tr -t tr -p mobi -o Guncel_Turkce_Sozluk.mobi
 ```
 
 # Ekran Görüntüleri
-<a href=""></a>
+<img src="https://github.com/anezih/gts_stardict_mobi/raw/main/img/Reader_2022-01-11_203535.png" width="200px">
+<img src="https://github.com/anezih/gts_stardict_mobi/raw/main/img/Reader_2022-01-12_010753.png" width="200px">
+<img src="https://github.com/anezih/gts_stardict_mobi/raw/main/img/screen_shot-25906.gif" width="200px">
+<img src="https://github.com/anezih/gts_stardict_mobi/raw/main/img/screen_shot-25907.gif" width="200px">
+<img src="https://github.com/anezih/gts_stardict_mobi/raw/main/img/screen_shot-25904.gif" width="200px">
