@@ -91,7 +91,8 @@ def create_gls(hunspell_dir=None):
             sys.exit(1)
     conn = sqlite3.connect("gts.sqlite3.db")
     conn.row_factory = sqlite3.Row
-    with_dups = dict()
+    with_dups_keys = list()
+    with_dups_values = list()
     wo_dups = dict()
     for it in conn.execute(sql):
         entry = f'<p style="margin-left:1em">'
@@ -118,19 +119,23 @@ def create_gls(hunspell_dir=None):
             entry += f'<br/><span style="margin-left:1.3em;margin-right:1.3em"><span style="color:#FF0000">▪</span> <i>{it["ornek"]}</i></span><br/>'
             if it['tam_adi']:
                 entry += f'<span style="margin-left:1.3em">—{it["tam_adi"]}</span>'
-        entry += f"</p>\n"
-        with_dups[it["madde"]] = entry
+        entry += f"</p>"
+        with_dups_keys.append(it["madde"])
+        with_dups_values.append(entry)
     conn.close()
 
-    for k,v in with_dups.items():
+    for k,v in zip(with_dups_keys, with_dups_values):
         if k in wo_dups.keys():
             wo_dups[k] = f'{wo_dups[k]}<p style="text-align:center">————</p>{v}'
         else:
             wo_dups[k] = v
     
+    for key in wo_dups.keys():
+        wo_dups[key] = wo_dups[key]+"\n"
+    
     fname = "Guncel_Turkce_Sozluk.gls"
     with open(fname, "w", encoding="utf-8", newline="") as f:
-        f.write("\n#stripmethod=keep\n#sametypesequence=h\n#bookname=Güncel Türkçe Sözlük\n#author=https://github.com/anezih\n\n")
+        f.write("\n#stripmethod=keep\n#sametypesequence=h\n#bookname=Güncel Türkçe Sözlük\n#author=https://github.com/anezih\n#description=TDK Güncel Türkçe Sözlük\n\n")
         for k,v in wo_dups.items():
             if (stem := h.stem(k)) and k == stem[0] and (suffixes := h.suffix_suggest(k)):
                 hw = f"{k}|"
