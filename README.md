@@ -1,7 +1,7 @@
 # Nedir?
 https://github.com/ogun/guncel-turkce-sozluk reposunda bulunan TDK Güncel Türkçe Sözlük veri tabanını biçimlendirerek StarDict sözlüğün hazırlanması için gerekli tab-delimited veya Babylon dosyaya dönüştüren bir python betiği. Ayrıca bu dosyadan elde edilen StarDict sözlüğü, Kindle ile uyumlu MOBI sözlük ve Kobo uyumlu sözlük aşağıda sunulmuştur.
 
-StarDict arşivi: Releases kısmına bakın, v1 için: [Güncel Türkçe Sözlük](dicts/GTS.zip)  
+StarDict arşivi: Releases kısmına bakın.  
 MOBI dosyası: Releases kısmına bakın.  
 Kobo dicthtml: Releases kısmına bakın.
 
