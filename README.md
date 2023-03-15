@@ -1,49 +1,45 @@
 # Nedir?
-https://github.com/ogun/guncel-turkce-sozluk reposunda bulunan TDK Güncel Türkçe Sözlük veri tabanını biçimlendirerek StarDict sözlüğün hazırlanması için gerekli tab-delimited veya Babylon dosyaya dönüştüren bir python betiği. Ayrıca bu dosyadan elde edilen StarDict sözlüğü, Kindle ile uyumlu MOBI sözlük ve Kobo uyumlu sözlük aşağıda sunulmuştur.
-
-StarDict arşivi: Releases kısmına bakın.  
-MOBI dosyası: Releases kısmına bakın.  
-Kobo dicthtml: Releases kısmına bakın.
-
-Sözlüğün StarDict versiyonu KOReader üzerinde, MOBI versiyonu Kindle 4 üzerinde, dicthtml versiyonu Kobo Aura Edition 2 üzerinde denenmiş, bariz bir soruna rastlanılmamıştır.
+https://github.com/ogun/guncel-turkce-sozluk reposunda bulunan TDK Güncel Türkçe Sözlük gts.json.tar.gz dosyasını
+PyGlossary aracılığıyla StarDict, Kobo ve Kindle formatlarına çeviren bir Python betiği.
 
 # Kullanımı
-`python gts_stardict.py --help`
+`python gts_convert.py --help`
 ```
-usage: gts_stardict.py [-h] [--gls] [--hunspell-path HUNSPELL_PATH]
+usage: gts_convert.py [-h] [--json-tar-gz-path JSON_TAR_GZ_PATH] [--stardict] [--kobo] [--kindle] [--dictzip]
+                      [--dictgen DICTGEN]
 
-https://github.com/ogun/guncel-turkce-sozluk reposunda bulunan TDK Güncel Türkçe Sözlük veri tabanını
-(gts.sqlite3.db) biçimlendirerek StarDict sözlüğün hazırlanması için gerekli tab-delimited veya Babylon GLS dosyaya
-dönüştüren bir python betiği. --gls seçeneği belirtilmediği takdirde tab-delimited dosya üretilecektir. Sözcüklerin
-çekimlenmiş halleri yalnızca *.gls formatında bulunmaktadır.
+https://github.com/ogun/guncel-turkce-sozluk reposunda bulunan TDK Güncel Türkçe Sözlük gts.json.tar.gz dosyasını
+PyGlossary aracılığıyla StarDict, Kobo ve Kindle formatlarına çeviren bir Python betiği.
 
-optional arguments:
+options:
   -h, --help            show this help message and exit
-  --gls                 "Tab-delimited dosya yerine *.gls dosyası oluşturmak istiyorsanız bu seçeneği ekleyin.
-                        Sözcüklerin çekimlenmiş halleri yalnızca *.gls formatında bulunmaktadır.
-  --hunspell-path HUNSPELL_PATH
-                        Eğer Hunspell sözlükleri betik ile aynı konumda değilse içinde tr.aff ve tr.dic bulunan
-                        Hunspell sözlüklerinin olduğu dosya yolunu ekleyin.
+  --json-tar-gz-path JSON_TAR_GZ_PATH
+                        gts.json.tar.gz konumu.
+  --stardict            StarDict çıktı formatı oluşturulsun.
+  --kobo                Kobo dicthtml.zip çıktı formatı oluşturulsun.
+  --kindle              Kindle MOBI çıktı formatı oluşturulsun.
+  --dictzip             StarDict .dict dosyasını sıkıştıracak dictzip aracı PATH'de mi?
+  --dictgen DICTGEN     Kobo dicthtml-tr.zip dosyasını oluşturacak aracın (dictgen-*.exe) konumu.
 ```
+Yukarıda belirtilen repodan gts.json.tar.gz dosyasını gts_convert.py betiğinin yanına indirin. Sözcüklerin çekim bilgilerinin yer aldığı tr_TR.json.gz dosyasının betik ile aynı konumda olduğundan emin olun. (Bu dosyanın nasıl oluşturulduğunu merak ediyorsanız [bağlantıyı](https://gist.github.com/anezih/5e0fc6d68c9166fe2ea3ffc05bc68476) takip edin. Üretilen json dosyasının [kaynak Hunspell dosyaları](https://github.com/titoBouzout/Dictionaries/blob/master/Turkish.txt).)
 
-- Yukarıda belirtilen repodaki `gts.sqlite3.db` sqlite veri tabanı dosyası `gts_stardict.py` betiği ile aynı konuma kaydedilir.
-- \*.gls dosyası oluşturulacaksa Türkçe Hunpsell `tr.aff` ve `tr.dic` dosyaları temin edilir.
-- Hunspell'i python içinden çağırmak için kullanılan wrapper'ı [burada](https://github.com/MSeal/cython_hunspell) bulabilirsiniz. **NOT**: 22 Mart 2022 itibariyle paketin Python 3.10 için derlenmiş bir pip paketi bulunmuyor. Paket sisteminizde derlenemediği takdirde Python 3.9'a geri dönmeniz gerekiyor. Yüklemek için <br/> `pip install cyhunspell`
-- Yukarıdaki yardım takip edilerek istenilen dosya oluşturulur. \*.gls dosyası için örnek: <br/>`python gts_stardict.py --gls --hunspell-path C:\Users\<username>\Documents\hunspell`
-- Elde edilen dosya [buradaki](https://code.google.com/archive/p/stardict-3/downloads) stardict-editor programı aracılığıyla StarDict formatına dönüştürülür. Bunun için dosya editörün `Compile` sekmesinden seçilir, dropdown menüde `.tabfile` için `Tab file` seçeneğinin, `gls` için `Babylon file` seçeneğinin seçildiğinden emin olunur ve `Compile` tuşuna basılarak işlem tamamlanır.
-- Eğer tabfile dosyası elde edilmişse, HTML biçimlendirmesinin görüntüleyici programda tanınması için elde edilen 3 dosyadan biri olan `*.ifo` dosyasında `sametypesequence` parametresi `m`'den `h`'ye değiştirilmelidir.
-- Elde edilen `*.dict` dosyası `dictzip` programı aracılığıyla `dictzip Guncel_Turkce_Sozluk.dict` komutuyla sıkıştırılabilir. Program çoğu Linux reposunda bulunmaktadır. Windows için derlenmiş bir versiyon [burada](https://github.com/Tvangeste/dictzip-win32) bulunabilir.
-- MOBI formatına [penelope](https://github.com/pettarin/penelope) aracılığıyla aşağıdaki komutla dönüştürebilirsiniz. MOBI dosyalarının yazılabilmesi için `PATH`'inizde `kindlegen` programının olması gerekmektedir. Not: <strike>\*.gls dosyasından elde edilen stardict dosyaları `kindlegen` programının kısıtlamaları nedeniyle MOBI'ye çevrilememektedir, sadece tabfile ile üretilen stardict dosyalarını çevirmeyi deneyiniz.</strike> MOBI'ye [PyGlossary](https://github.com/ilius/pyglossary) kullanarak da çevirmeyi deneyebilirsiniz (\*.gls dosyasından elde edilmiş stardict dosyaları dahil). MOBI çıktı ayarlarında, `kindlegen` `PATH`'inizde olsa dahi çalıştırılabilir dosyanın adını ekleyin. Aksi takdirde, en azından benim denemelerimde, PyGlossary programı bulamıyor. Ayrıca, \*.ifo dosyasında, `bookname` kısmına `TR-TR` gibi kaynak ve hedef dili gösteren bir ibare eklemelisiniz. Örnek: `bookname=Güncel Türkçe Sözlük TR-TR`.
+Tüm formatları üretmek için betiği şu şekilde çağırın:
 
+`python gts_convert.py --stardict --kobo --kindle --dictzip --dictgen "dictgen-windows.exe"`
+
+`--dictzip` anahtarı, kullanıldığında dictzip çalıştırılabilir dosyasının PATH'de olduğunu belirtir. (Windows'a yüklemek için: https://github.com/Tvangeste/dictzip-win32)
+
+`--dictgen` parametresi Dictfile dosyasını Kobo dicthtml.zip formatına dönüştüren çalıştırılabilir dosyanın konumunu gösterir. Sisteminiz için uygun dictgen-* programını https://github.com/pgaskin/dictutil adresinden edinebilirsiniz.
+
+# Gerekli paketler
 ```
-penelope -i GTS.zip -j stardict -f tr -t tr -p mobi -o Guncel_Turkce_Sozluk.mobi --title "Güncel Türkçe Sözlük"
+pip install pyglossary==4.6.1
+pip install requests
 ```
-# Kobo sözlüğünü oluşturma ve yükleme
-* Tüm \*.gls dosyası içeriğini https://pgaskin.net/dictutil/examples/bgl-convert.html adresine kopyalayarak Kobo sözlük için bir ön format sayılabilecek \*.df formatını elde edebilirsiniz. 
-  * Output dictfile içeriğini `[name].df` dosyasına kaydettikten sonra [dictgen](https://pgaskin.net/dictutil/dictgen/) yardımıyla \*.df dosyasını `dicthtml.zip` formatına çevirin. 
-  * İsmi `dicthtml-tr.zip` olarak değiştirin. Sözlüğü `KOBOeReader/.kobo/dict` konumuna kopyalayın.
-  * `KOBOeReader/.kobo/Kobo/Kobo eReader.conf` dosyasında `ApplicationPreferences` kısmının altına `ExtraLocales=tr` seçeneğini ekleyin.
-  * Kaynak ve detaylı açıklama için [buraya](https://pgaskin.net/dictutil/dicthtml/install.html) başvurun.
+# Kobo sözlüğünü yükleme
+* Sözlüğü `KOBOeReader/.kobo/dict` konumuna kopyalayın.
+* `KOBOeReader/.kobo/Kobo/Kobo eReader.conf` dosyasında `ApplicationPreferences` kısmının altına `ExtraLocales=tr` seçeneğini ekleyin.
+* Kaynak ve detaylı açıklama için [buraya](https://pgaskin.net/dictutil/dicthtml/install.html) başvurun.
 
 # V1 Ekran Görüntüleri
 
@@ -75,6 +71,3 @@ penelope -i GTS.zip -j stardict -f tr -t tr -p mobi -o Guncel_Turkce_Sozluk.mobi
 |**V2.1 - Girdinin eksik tanımları eklendi/2**                     |**V2.1 - Girdinin eksik tanımları eklendi/3**                                 |
 |<img src="img/v2_1/screen_shot-20980.gif" width="300px">|<img src="img/v2_1/screen_shot-20981.gif" width="300px">|
 |**V2.1 PyGlossary aracılığıyla Kindle için derlendi,<br/> çekimlenmiş sözcüklerde sonuç dönüyor**| **Kindle üzerinde tanımın detaylı görünümü**|
-
-# TODO
-- <strike>Çekimlenen sözcüklerde sonuç dönmeyebilir. Örneğin `dürtüsü` bir sonuç döndürmeyecektir. Sözcüğün anlamına bakılabilmesi için kelimenin çekimsiz halinin (`dürtü`) elle aranması gerekmektedir. Bu sorunu çözmek için tüm headword'lerin potansiyel çekimlerinin üretilip StarDict'in `*.syn` dosyasına kaydedilmesi araştırılabilir, [bkz.](https://github.com/huzheng001/stardict-3/blob/96b96d89eab5f0ad9246c2569a807d6d7982aa84/dict/doc/StarDictFileFormat#L216) Sözcüklerin çekimli hallerinin üretilmesi için [Zemberek](https://github.com/ahmetaa/zemberek-nlp/tree/master/morphology#word-generation) projesinin word generation özelliği kullanılabilir.</strike> → Hunspell yardımıyla kısmen çözümlendi ancak hala özelleşmiş bir NLP kütüphanesi daha iyi sonuçlar verebilir.
