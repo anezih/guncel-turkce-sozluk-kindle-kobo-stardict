@@ -41,7 +41,8 @@ pip install requests
 * `KOBOeReader/.kobo/Kobo/Kobo eReader.conf` dosyasında `ApplicationPreferences` kısmının altına `ExtraLocales=tr` seçeneğini ekleyin.
 * Kaynak ve detaylı açıklama için [buraya](https://pgaskin.net/dictutil/dicthtml/install.html) başvurun.
 
-# V1 Ekran Görüntüleri
+# Ekran Görüntüleri
+## V1
 
 |                                                          |                                                           |
 |:--------------------------------------------------------:|:---------------------------------------------------------:|
