@@ -17,7 +17,7 @@ VERSION = (2, 3)
 LAST_ID = 92411
 
 class INFL:
-    # https://gist.github.com/anezih/5e0fc6d68c9166fe2ea3ffc05bc68476
+    # https://github.com/anezih/HunspellWordForms
     def __init__(self, unmunched: str) -> None:
         try:
            with gzip.open(unmunched, "rt", encoding="utf-8") as infl:
