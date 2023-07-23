@@ -1,31 +1,37 @@
 # Nedir?
-https://github.com/ogun/guncel-turkce-sozluk reposunda bulunan TDK Güncel Türkçe Sözlük gts.json.tar.gz dosyasını
-PyGlossary aracılığıyla StarDict, Kobo ve Kindle formatlarına çeviren bir Python betiği.
+TDK Güncel Türkçe Sözlük gts.json.tar.gz dosyasını PyGlossary aracılığıyla StarDict, Kobo ve Kindle formatlarına çeviren bir Python betiği.
 
 # Kullanımı
 `python gts_convert.py --help`
 ```
-usage: gts_convert.py [-h] [--json-tar-gz-path JSON_TAR_GZ_PATH] [--stardict] [--kobo] [--kindle] [--dictzip]
-                      [--dictgen DICTGEN]
+usage: gts_convert.py [-h] [--json-tar-gz-path JSON_TAR_GZ_PATH] [--cekim-sozlukler CEKIM_SOZLUKLER] [--stardict]
+                      [--kobo] [--kindle] [--dictzip] [--dictgen DICTGEN]
 
-https://github.com/ogun/guncel-turkce-sozluk reposunda bulunan TDK Güncel Türkçe Sözlük gts.json.tar.gz dosyasını
-PyGlossary aracılığıyla StarDict, Kobo ve Kindle formatlarına çeviren bir Python betiği.
+TDK Güncel Türkçe Sözlük gts.json.tar.gz dosyasını PyGlossary aracılığıyla StarDict, Kobo ve Kindle formatlarına çeviren bir Python betiği.
 
 options:
   -h, --help            show this help message and exit
   --json-tar-gz-path JSON_TAR_GZ_PATH
                         gts.json.tar.gz konumu.
+  --cekim-sozlukler CEKIM_SOZLUKLER
+                        Sözcük çekimleri için ek Stardict sözlüklerinin dosya yolları. Birden fazla kaynağı noktalı
+                        virgül (;) ile ayırın
   --stardict            StarDict çıktı formatı oluşturulsun.
   --kobo                Kobo dicthtml.zip çıktı formatı oluşturulsun.
   --kindle              Kindle MOBI çıktı formatı oluşturulsun.
   --dictzip             StarDict .dict dosyasını sıkıştıracak dictzip aracı PATH'de mi?
   --dictgen DICTGEN     Kobo dicthtml-tr.zip dosyasını oluşturacak aracın (dictgen-*.exe) konumu.
 ```
-Yukarıda belirtilen repodan gts.json.tar.gz dosyasını gts_convert.py betiğinin yanına indirin. Sözcüklerin çekim bilgilerinin yer aldığı tr_TR.json.gz dosyasının betik ile aynı konumda olduğundan emin olun. (Bu dosyanın nasıl oluşturulduğunu merak ediyorsanız [bağlantıyı](https://github.com/anezih/HunspellWordForms) takip edin. Üretilen json dosyasının [kaynak Hunspell dosyaları](https://github.com/titoBouzout/Dictionaries/blob/master/Turkish.txt).)
+gts.json.tar.gz dosyasının ve sözcüklerin çekim bilgilerinin yer aldığı tr_TR.json.gz dosyasının betik ile aynı konumda olduğundan emin olun. (Bu dosyanın nasıl oluşturulduğunu merak ediyorsanız [bağlantıyı](https://github.com/anezih/HunspellWordForms) takip edin. Üretilen json dosyasının [kaynak Hunspell dosyaları](https://github.com/titoBouzout/Dictionaries/blob/master/Turkish.txt).) (NOT: 2.4 versiyonu öncesinde kaynak olarak kullanılan gts.json.tar.gz dosyasına [buradan](https://github.com/ogun/guncel-turkce-sozluk) ulaşabilirsiniz)
 
 Tüm formatları üretmek için betiği şu şekilde çağırın:
 
 `python gts_convert.py --stardict --kobo --kindle --dictzip --dictgen "dictgen-windows.exe"`
+
+`--cekim-sozlukler` parametresi, var olan sözcük çekim bilgilerini hazırlanan sözlüğe ekleyebilmenizi sağlar. Bu parametreye çekim bilgileri olan StarDict sözlüklerinin yollarını gösterin. Birden fazla sözlük kullanılacaksa bunları noktalı virgül (;) ile ayırın. Örnek:
+```
+python gts_convert.py --cekim-sozlukler "D:\sozlukler\kaynak_1.ifo;D:\sozlukler\kaynak_2.ifo" --stardict --kobo --kindle --dictzip --dictgen "dictgen-windows.exe"
+```
 
 `--dictzip` anahtarı, kullanıldığında dictzip çalıştırılabilir dosyasının PATH'de olduğunu belirtir. (Windows'a yüklemek için: https://github.com/Tvangeste/dictzip-win32)
 
@@ -39,6 +45,7 @@ pip install requests
 # Kobo sözlüğünü yükleme
 * Sözlüğü `KOBOeReader/.kobo/dict` konumuna kopyalayın.
 * `KOBOeReader/.kobo/Kobo/Kobo eReader.conf` dosyasında `ApplicationPreferences` kısmının altına `ExtraLocales=tr` seçeneğini ekleyin.
+* Veya sözlüğü doğrudan `KOBOeReader/.kobo/custom-dict` konumuna kopyalayın.
 * Kaynak ve detaylı açıklama için [buraya](https://pgaskin.net/dictutil/dicthtml/install.html) başvurun.
 
 
