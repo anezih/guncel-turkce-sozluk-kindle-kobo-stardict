@@ -273,7 +273,7 @@ if __name__ == '__main__':
     Glossary.init()
     parser = argparse.ArgumentParser(description=
     """
-    https://github.com/ogun/guncel-turkce-sozluk reposunda bulunan TDK Güncel Türkçe Sözlük gts.json.tar.gz dosyasını
+    TDK Güncel Türkçe Sözlük gts.json.tar.gz dosyasını
     PyGlossary aracılığıyla StarDict, Kobo ve Kindle formatlarına çeviren bir Python betiği.
     """)
     parser.add_argument('--json-tar-gz-path', default="gts.json.tar.gz",

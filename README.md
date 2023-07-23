@@ -7,7 +7,8 @@ TDK Güncel Türkçe Sözlük gts.json.tar.gz dosyasını PyGlossary aracılığ
 usage: gts_convert.py [-h] [--json-tar-gz-path JSON_TAR_GZ_PATH] [--cekim-sozlukler CEKIM_SOZLUKLER] [--stardict]
                       [--kobo] [--kindle] [--dictzip] [--dictgen DICTGEN]
 
-TDK Güncel Türkçe Sözlük gts.json.tar.gz dosyasını PyGlossary aracılığıyla StarDict, Kobo ve Kindle formatlarına çeviren bir Python betiği.
+TDK Güncel Türkçe Sözlük gts.json.tar.gz dosyasını PyGlossary aracılığıyla StarDict, Kobo ve Kindle formatlarına
+çeviren bir Python betiği.
 
 options:
   -h, --help            show this help message and exit
