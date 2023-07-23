@@ -23,7 +23,7 @@ options:
   --dictzip             StarDict .dict dosyasını sıkıştıracak dictzip aracı PATH'de mi?
   --dictgen DICTGEN     Kobo dicthtml-tr.zip dosyasını oluşturacak aracın (dictgen-*.exe) konumu.
 ```
-gts.json.tar.gz dosyasının ve sözcüklerin çekim bilgilerinin yer aldığı tr_TR.json.gz dosyasının betik ile aynı konumda olduğundan emin olun. (Bu dosyanın nasıl oluşturulduğunu merak ediyorsanız [bağlantıyı](https://github.com/anezih/HunspellWordForms) takip edin. Üretilen json dosyasının [kaynak Hunspell dosyaları](https://github.com/titoBouzout/Dictionaries/blob/master/Turkish.txt).) (NOT: 2.4 versiyonu öncesinde kaynak olarak kullanılan gts.json.tar.gz dosyasına [buradan](https://github.com/ogun/guncel-turkce-sozluk) ulaşabilirsiniz)
+gts.json.tar.gz dosyasının ve sözcüklerin çekim bilgilerinin yer aldığı tr_TR.json.gz dosyasının betik ile aynı konumda olduğundan emin olun. (tr_TR.json.gz dosyasının nasıl oluşturulduğunu merak ediyorsanız [bağlantıyı](https://github.com/anezih/HunspellWordForms) takip edin. Üretilen json dosyasının [kaynak Hunspell dosyaları](https://github.com/titoBouzout/Dictionaries/blob/master/Turkish.txt).) (NOT: 2.4 versiyonu öncesinde kaynak olarak kullanılan gts.json.tar.gz dosyasına [buradan](https://github.com/ogun/guncel-turkce-sozluk) ulaşabilirsiniz)
 
 Tüm formatları üretmek için betiği şu şekilde çağırın:
 
