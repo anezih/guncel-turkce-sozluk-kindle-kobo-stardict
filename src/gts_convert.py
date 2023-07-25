@@ -151,6 +151,7 @@ def local_json(fname: str) -> list[dict]:
             _json.seek(0,0)
             arr = json.load(_json)
         else:
+            _json.seek(0,0)
             for i in _json.readlines():
                 arr.append(json.loads(i))
     arr.sort(key=lambda x: int(x["madde_id"]))
@@ -263,7 +264,7 @@ def create_dictionaries(dictionary: list[dict], infl_dicts: list[INFL], stardict
     if kindle:
         print(f"*** {fname} Kindle MOBI dosyası oluşturuluyor, bu işlem biraz zaman alabilir.")
         kindle_out = os.path.join(out_dir(fname, 'Kindle'), fname)
-        glos_kindle.write(filename=kindle_out, format="Mobi", kindlegen_path="kindlegen.exe")
+        glos_kindle.write(filename=kindle_out, format="Mobi", kindlegen_path="kindlegen")
         mobi_path = os.path.join(kindle_out, "OEBPS", "content.mobi")
         if os.path.isfile(mobi_path):
             os.rename(mobi_path, os.path.join(out_dir(fname, 'Kindle'), f"{fname}.mobi"))
