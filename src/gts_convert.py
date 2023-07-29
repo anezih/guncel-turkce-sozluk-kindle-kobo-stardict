@@ -11,7 +11,6 @@ from datetime import datetime
 
 import requests
 from pyglossary.glossary_v2 import Glossary
-from pyglossary.sort_keys import namedSortKeyList
 
 VERSION = (2, 4)
 LAST_ID = 99501
@@ -144,7 +143,7 @@ def dl_new_entries(num: int, ignore_cache: bool = False) -> list[dict]:
     return extra_arr
 
 def local_json(fname: str) -> list[dict]:
-    arr = []
+    arr: list[dict[str,str]] = []
     with tarfile.open(fname, "r:gz") as f:
         _json = f.extractfile("gts.json")
         if _json.read(1).decode() == "[":
@@ -157,13 +156,17 @@ def local_json(fname: str) -> list[dict]:
     arr.sort(key=lambda x: int(x["madde_id"]))
     if (num := int(arr[-1]["madde_id"])) < LAST_ID:
         arr += dl_new_entries(num=num)
+    for e in arr:
+        if not e['madde']:
+            arr.remove(e)
+    arr.sort(key=lambda x: (x["madde"].strip().encode("utf-8").lower(), x["madde"].strip()))
     return arr
 
 def create_dictionaries(dictionary: list[dict], infl_dicts: list[INFL], stardict: bool = False, kobo: bool = False, kindle: bool = False, dictzip: bool = False, dictgen: str = ""):
     glos = Glossary()
     glos.setInfo("title", "Güncel Türkçe Sözlük")
     glos.setInfo("author", "https://github.com/anezih")
-    glos.setInfo("description", f"TDK Güncel Türkçe Sözlük | Sürüm: {VERSION[0]}.{VERSION[1]}")
+    glos.setInfo("description", f"TDK Güncel Türkçe Sözlük | Sürüm: {'.'.join(map(str, VERSION))}")
     glos.setInfo("date", f"{datetime.today().strftime('%d/%m/%Y')}")
     glos.sourceLangName = "tr"
     glos.targetLangName = "tr"
@@ -242,16 +245,14 @@ def create_dictionaries(dictionary: list[dict], infl_dicts: list[INFL], stardict
                 word = madde_cekimler, defi=entry, defiFormat="h"
             )
         )
-    named = namedSortKeyList[3] # name="stardict"
-    # named._replace(name="headword:tr_TR.UTF-8")
-    glos._data.setSortKey(namedSortKey=named, sortEncoding="utf-8", writeOptions={})
+
     glos_kobo   = deepcopy(glos)
     glos_kindle = deepcopy(glos)
 
-    fname = f"GTSv{VERSION[0]}.{VERSION[1]}"
+    fname = f"GTSv{'.'.join(map(str, VERSION))}"
     if stardict:
         stardict_out = os.path.join(out_dir(fname, 'StarDict'), fname)
-        glos.write(filename=stardict_out, format="Stardict", dictzip=dictzip, sort=True) # sortKeyName = "headword:tr_TR.UTF-8"
+        glos.write(filename=stardict_out, format="Stardict", dictzip=dictzip)
         print(f"*** {fname} StarDict dosyaları oluşturuldu.")
     if kobo:
         kobo_out = os.path.join(out_dir(fname, 'Kobo'), fname)
