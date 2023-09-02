@@ -1,175 +1,39 @@
 import argparse
-import gzip
 import html
-import json
 import os
 import subprocess
-import sys
-import tarfile
 from copy import deepcopy
 from datetime import datetime
 
-import requests
 from pyglossary.glossary_v2 import Glossary
 
-VERSION = (2, 4)
+from infl import INFL, GlosSource, Unmunched
+from kindle import kindle_glos
+from util import fix_df_hws, fix_quotes, local_json, out_dir
+
+VERSION = (2, 4, 1)
 LAST_ID = 99501
 DUZELTME_IMLERI_DICT = {
     "Â" : "A", "â" : "a",
     "Û" : "U", "û" : "u",
     "Î" : "İ", "î" : "i"
 }
-normalize = str.maketrans(DUZELTME_IMLERI_DICT)
+NORMALIZE = str.maketrans(DUZELTME_IMLERI_DICT)
 
-class INFL():
-    def __init__(self, source: str) -> None:
-        self.j = {}
-        self.populate_dict(source=source)
-
-    def populate_dict(self, source: str, glos_format: str = "") -> None:
-        raise NotImplementedError
-
-    def get_infl(self, word: str) -> list[str]:
-        raise NotImplementedError
-
-class Unmunched(INFL):
-    def populate_dict(self, source: str) -> None:
-        if source.endswith(".gz"):
-            try:
-                with gzip.open(source, "rt", encoding="utf-8") as f:
-                    temp = json.load(f)
-            except:
-                sys.exit("[!] Gzip ile sıkıştırılmış tr_TR.json.gz dosyası açılamadı.\n Dosya ismini/yolunu kontrol edin.")
-        else:
-            try:
-                with open(source, "r", encoding="utf-8") as f:
-                    temp = json.load(f)
-            except:
-                sys.exit("[!] tr_TR.json dosyası açılamadı.\n Dosya ismini/yolunu kontrol edin.")
-        for it in temp:
-         for key, val in it.items():
-            if key in self.j.keys():
-                self.j[key]["SFX"] += val["SFX"]
-            else:
-                self.j[key] = val
-
-    def get_infl(self, word: str) -> list[str]:
-        afx = []
-        afx_lst = self.j.get(word)
-        if afx_lst:
-            afx += afx_lst["SFX"]
-        return afx
-
-class GlosSource(INFL):
-    def populate_dict(self, source: str) -> None:
-        if not os.path.exists(source):
-            sys.exit("[!] Çekimler için kaynak olarak kullanılacak sözlük bulunamadı.\n Dosya ismini/yolunu kontrol edin.")
-        glos = Glossary()
-        glos.directRead(filename=source)
-        for entry in glos:
-            if len(entry.l_word) < 2:
-                continue
-            hw = entry.l_word[0]
-            if hw in self.j.keys():
-                self.j[hw] += entry.l_word[1:]
-            else:
-                self.j[hw] = entry.l_word[1:]
-
-    def get_infl(self, word: str) -> list[str]:
-        return self.j.get(word, [])
-
-def out_dir(name: str, format: str) -> str:
-    folder_name = f"{name}_{format}"
-    try:
-        if os.path.exists(folder_name):
-            return os.path.join(os.getcwd(), folder_name)
-        else:
-            os.mkdir(folder_name)
-            return os.path.join(os.getcwd(), folder_name)
-    except:
-        print(f"{format} formatı için çıktı klasörü oluşturulamadı.")
-        return os.getcwd()
-
-def fix_quotes(text: str) -> str:
-    text = text.replace("'","’")
-    out = []
-    is_first_found = False
-    for char in text:
-        if char == '`':
-            new_char = '‘' if not is_first_found else '’ '
-            is_first_found = True
-        else:
-            new_char = char
-        out.append(new_char)
-    return ''.join(out).strip()
-
-def fix_df_hws(fname: str) -> None:
-    with open(fname, "r", encoding="utf-8") as df:
-        with open(f"{fname}_fixed", "w", encoding="utf-8") as df_out:
-            for line in df.readlines():
-                if line.startswith("@"):
-                    line = line.replace("\"", "'")
-                    df_out.write(line)
-                    df_out.flush()
-                else:
-                    df_out.write(line)
-                    df_out.flush()
-
-def dl_new_entries(num: int, ignore_cache: bool = False) -> list[dict]:
-    if os.path.exists(cache_fname := f"{num+1}_{LAST_ID}.json") and not ignore_cache:
-        with open(cache_fname, "r", encoding="utf-8") as cache_in:
-            return json.load(cache_in)
-    extra_arr = []
-    s = requests.Session()
-    headers = {
-        "User-Agent": "APIs-Google (+https://developers.google.com/webmasters/APIs-Google.html)"
-    }
-    url = "https://www.sozluk.gov.tr/gts_id"
-    for i in range(num+1, LAST_ID+1):
-        try:
-            res = s.get(url, params={"id": i}, headers=headers)
-            if res.status_code == 200:
-                if res.json().get("error"):
-                    continue
-                extra_arr.append(res.json()[0])
-                print(f"Yeni girdilerden {i}/{LAST_ID} indirildi.", end="\r")
-        except:
-            pass
-    print("\n")
-    if extra_arr:
-        extra_arr.sort(key=lambda x: int(x["madde_id"]))
-        with open(cache_fname, "w", encoding="utf-8") as cache_out:
-            json.dump(extra_arr, cache_out, ensure_ascii=False, indent=2)
-    return extra_arr
-
-def local_json(fname: str) -> list[dict]:
-    arr: list[dict[str,str]] = []
-    with tarfile.open(fname, "r:gz") as f:
-        _json = f.extractfile("gts.json")
-        if _json.read(1).decode() == "[":
-            _json.seek(0,0)
-            arr = json.load(_json)
-        else:
-            _json.seek(0,0)
-            for i in _json.readlines():
-                arr.append(json.loads(i))
-    arr.sort(key=lambda x: int(x["madde_id"]))
-    if (num := int(arr[-1]["madde_id"])) < LAST_ID:
-        arr += dl_new_entries(num=num)
-    for e in arr:
-        if not e['madde']:
-            arr.remove(e)
-    arr.sort(key=lambda x: (x["madde"].strip().encode("utf-8").lower(), x["madde"].strip()))
-    return arr
-
-def create_dictionaries(dictionary: list[dict], infl_dicts: list[INFL], stardict: bool = False, kobo: bool = False, kindle: bool = False, dictzip: bool = False, dictgen: str = ""):
+def create_dictionaries(dictionary: list[dict[str,str]], infl_dicts: list[INFL], stardict: bool = False,
+                        kobo: bool = False, kindle: bool = False, dictzip: bool = False, dictgen: str = ""):
     glos = Glossary()
+    glos_kindle = None
+    glos_kobo   = None
     glos.setInfo("title", "Güncel Türkçe Sözlük")
     glos.setInfo("author", "https://github.com/anezih")
     glos.setInfo("description", f"TDK Güncel Türkçe Sözlük | Sürüm: {'.'.join(map(str, VERSION))}")
     glos.setInfo("date", f"{datetime.today().strftime('%d/%m/%Y')}")
     glos.sourceLangName = "tr"
     glos.targetLangName = "tr"
+
+    if kindle:
+        glos_kindle = kindle_glos(deepcopy(glos), dictionary, infl_dicts, normalize=NORMALIZE)
 
     for it in dictionary:
         if not it.get("anlamlarListe"):
@@ -233,7 +97,7 @@ def create_dictionaries(dictionary: list[dict], infl_dicts: list[INFL], stardict
             for _infl in infl_dict.get_infl(word=madde)
         }
 
-        if madde != (duzeltme_yok := madde.translate(normalize)):
+        if madde != (duzeltme_yok := madde.translate(NORMALIZE)):
             suffixes_set.add(duzeltme_yok)
         if madde in suffixes_set:
             suffixes_set.remove(madde)
@@ -246,8 +110,8 @@ def create_dictionaries(dictionary: list[dict], infl_dicts: list[INFL], stardict
             )
         )
 
-    glos_kobo   = deepcopy(glos)
-    glos_kindle = deepcopy(glos)
+    if kobo:
+        glos_kobo = deepcopy(glos)
 
     fname = f"GTSv{'.'.join(map(str, VERSION))}"
     if stardict:
@@ -260,7 +124,8 @@ def create_dictionaries(dictionary: list[dict], infl_dicts: list[INFL], stardict
         fix_df_hws(kobo_out)
         print(f"*** {fname} Dictfile dosyası oluşturuldu.")
         if dictgen:
-            subprocess.Popen([dictgen, f"{kobo_out}_fixed", "-o", os.path.join(out_dir(fname, 'Kobo'), "dicthtml-tr.zip")], stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
+            subprocess.Popen([dictgen, f"{kobo_out}_fixed", "-o", os.path.join(out_dir(fname, 'Kobo'),
+                            "dicthtml-tr.zip")], stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
             print(f"    *** Dictfile dosyası dicthtml-tr.zip (Kobo) formatına dönüştürüldü.")
     if kindle:
         print(f"*** {fname} Kindle MOBI dosyası oluşturuluyor, bu işlem biraz zaman alabilir.")
@@ -294,7 +159,7 @@ if __name__ == '__main__':
         help="""Kobo dicthtml-tr.zip dosyasını oluşturacak aracın (dictgen-*.exe) konumu.""")
 
     args = parser.parse_args()
-    local = local_json(args.json_tar_gz_path)
+    local = local_json(args.json_tar_gz_path, LAST_ID=LAST_ID)
     infl_dicts = []
     infl_dicts.append(Unmunched("tr_TR.json.gz"))
     if args.cekim_sozlukler:
@@ -303,4 +168,6 @@ if __name__ == '__main__':
                 infl_dicts.append(GlosSource(cekim_s))
         else:
             infl_dicts.append(GlosSource(args.cekim_sozlukler))
-    create_dictionaries(dictionary=local, infl_dicts=infl_dicts, stardict=args.stardict, kobo=args.kobo, kindle=args.kindle, dictzip=args.dictzip, dictgen=args.dictgen)
+    create_dictionaries(dictionary=local, infl_dicts=infl_dicts, stardict=args.stardict, kobo=args.kobo,
+                        kindle=args.kindle, dictzip=args.dictzip, dictgen=args.dictgen
+    )
