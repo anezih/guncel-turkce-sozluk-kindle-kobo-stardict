@@ -1,7 +1,7 @@
 from pyglossary.glossary_v2 import Glossary
 
 from infl import INFL
-from util import fix_quotes
+from util import fix_quotes, gondermeler
 
 def kindle_glos(glos: Glossary, dictionary: list[dict[str,str]], infl_dicts: list[INFL], normalize) -> Glossary:
     entry_id_pairs: dict[str,str] = {it["madde"].strip() : f"{idx}".zfill(8) for idx, it in enumerate(dictionary, start=1)}
@@ -49,7 +49,7 @@ def kindle_glos(glos: Glossary, dictionary: list[dict[str,str]], infl_dicts: lis
                     ozellikler += f'<i>{i["tam_adi"]}{", " if i != a["ozelliklerListe"][-1] else ""}</i>'
                 if len(ozellikler) > 1:
                     anlam += f'<span style="color:#696969">[{ozellikler}]</span> '
-            anlam += f'{fix_quotes(a["anlam"])}<br/>'
+            anlam += f'{gondermeler(fix_quotes(a["anlam"]), entry_id_pairs)}<br/>'
             if a.get("orneklerListe"):
                 for i in a.get("orneklerListe"):
                     anlam += f'<br/><span style="margin-left:1.3em;margin-right:1.3em">▪ <i>{i["ornek"]}</i></span><br/>'

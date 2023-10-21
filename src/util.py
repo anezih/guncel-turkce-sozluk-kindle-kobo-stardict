@@ -1,5 +1,7 @@
+import html
 import json
 import os
+import re
 import tarfile
 
 import requests
@@ -88,3 +90,42 @@ def local_json(fname: str, LAST_ID: int) -> list[dict]:
             arr.remove(e)
     arr.sort(key=lambda x: (x["madde"].strip().encode("utf-8").lower(), x["madde"].strip()))
     return arr
+
+def gondermeler(defi: str, entry_id_pairs: dict[str, str] = None) -> str:
+    res = re.search(r"(?:;|►|bk\.)\s?([^.:]+)", defi)
+    if not res:
+        return defi
+    else:
+        new_defi = defi
+        pointed_words_temp = [word.strip() for word in res.group(1).split(",")]
+        pointed_words = []
+        for pwt in pointed_words_temp:
+            if " (" in pwt:
+                pointed_words.append(pwt[:pwt.index(" (")])
+            else:
+                pointed_words.append(pwt)
+        pointed_words.sort(
+            key = lambda x: len(x),
+            reverse = True
+        )
+        # kindle
+        if entry_id_pairs:
+            for pw in pointed_words:
+                kindle_pointed_word_id = entry_id_pairs.get(pw)
+                if not kindle_pointed_word_id:
+                    return defi
+                else:
+                    new_defi = new_defi.replace(
+                        pw,
+                        f'<a href="#{kindle_pointed_word_id}">{pw}</a>',
+                        1
+                    )
+            return new_defi
+        # stardict
+        for pw in pointed_words:
+            new_defi = new_defi.replace(
+                pw,
+                f'<a href="bword://{html.escape(pw)}">{pw}</a>',
+                1
+            )
+        return new_defi

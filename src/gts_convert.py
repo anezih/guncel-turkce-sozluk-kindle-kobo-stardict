@@ -9,9 +9,9 @@ from pyglossary.glossary_v2 import Glossary
 
 from infl import INFL, GlosSource, Unmunched
 from kindle import kindle_glos
-from util import fix_df_hws, fix_quotes, local_json, out_dir
+from util import fix_df_hws, fix_quotes, gondermeler, local_json, out_dir
 
-VERSION = (2, 4, 1)
+VERSION = (2, 4, 2)
 LAST_ID = 99501
 DUZELTME_IMLERI_DICT = {
     "Â" : "A", "â" : "a",
@@ -71,7 +71,7 @@ def create_dictionaries(dictionary: list[dict[str,str]], infl_dicts: list[INFL],
                     ozellikler += f'<i>{i["tam_adi"]}{", " if i != a["ozelliklerListe"][-1] else ""}</i>'
                 if len(ozellikler) > 1:
                     anlam += f'<span style="color:#696969">[{ozellikler}]</span> '
-            anlam += f'{fix_quotes(a["anlam"])}<br/>'
+            anlam += f'{gondermeler(fix_quotes(a["anlam"]))}<br/>'
             if a.get("orneklerListe"):
                 for i in a.get("orneklerListe"):
                     anlam += f'<br/><span style="margin-left:1.3em;margin-right:1.3em">▪ <i>{i["ornek"]}</i></span><br/>'
