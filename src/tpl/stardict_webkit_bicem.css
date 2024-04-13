@@ -1,0 +1,151 @@
+div.girdi {
+    display: block;
+}
+
+div.ozellik {
+    display: inline-block;
+}
+
+div.anlam {
+    display: block;
+    margin-top: 0.375em;
+}
+
+div.anlam-tekil {
+    display: block;
+    margin-bottom: 0.5em;
+}
+
+div.ornekler {
+    display: block;
+}
+
+div.atasozu {
+    display: block;
+    margin-top: 0.5em;
+}
+
+div.birlesikler {
+    display: block;
+    margin-top: 0.5em;
+}
+
+span.okunus {
+    display: block;
+    margin-bottom: 0.375em;
+    color: #014E52;
+}
+
+span.dil {
+    display: block;
+    margin-bottom: 0.5em;
+}
+
+span.dil::before {
+    content: "Kaynak: ";
+    color: #7C021A;
+}
+
+span.cogul {
+    display: inline-block;
+    color: #002BB3;
+}
+
+span.cogul::after {
+    content: "\00A0";
+}
+
+span.ozel {
+    display: inline-block;
+    color: #002BB3;
+}
+
+span.madde {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 0.375em;
+}
+
+span.anlam-sira {
+    font-weight: bold;
+}
+
+span.anlam-sira::after {
+    content: ". ";
+}
+
+span.eylem {
+    display: inline-block;
+    color: #002BB3;
+}
+
+span.eylem::after {
+    content: "\00A0";
+}
+
+span.girinti {
+    text-indent: 1em;
+}
+
+span.ozellik {
+    display: inline-block;
+    font-style: normal;
+    color: #002BB3;
+}
+
+span.ozellik::before {
+    content: "[";
+    font-style: normal;
+}
+
+span.ozellik::after {
+    content: "]";
+    font-style: normal;
+}
+
+/* span.anlam {
+
+} */
+
+span.ornek {
+    display: block;
+    margin-left: 1em;
+    margin-right: 1em;
+    margin-top: 0.5em;
+}
+
+span.ornek::before {
+    content: "\25AA\00A0";
+}
+
+span.yazar {
+    display: block;
+    text-indent: 1.05em;
+}
+
+span.yazar::before {
+    content: "\2014\00A0";
+}
+
+span.baslik {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 0.375em;
+}
+
+span.atasozu-baglanti {
+    display: block;
+}
+
+span.birlesikler-baglanti {
+    display: block;
+}
+
+a::before {
+    content: "\2197\00A0";
+}
+
+a {
+    text-decoration: none;
+    color: black;
+}

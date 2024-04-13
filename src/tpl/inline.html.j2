@@ -1,0 +1,69 @@
+<div style="display: block;">
+    <div style="display: inline-block;">
+        {% if Girdi.telaffuz %}
+            <span style="display: block;margin-bottom: 0.375em;">/{{ Girdi.telaffuz }}/</span>
+        {% endif %}
+        {% if Girdi.lisan %}
+            <span style="display: block;margin-bottom: 0.5em;">Kaynak: {{ Girdi.lisan }}</span>
+        {% endif %}
+        {% if Girdi.cogul_mu %}
+            <span style="display: inline-block;">[ÇOĞUL]&nbsp;</span>
+        {% endif %}
+        {% if Girdi.ozel_mi %}
+            <span style="display: inline-block;">[ÖZEL]</span>
+        {% endif %}
+    </div>
+    <div style="display: block;margin-top: 0.375em;">
+        {% if Girdi.on_taki or Girdi.taki %}
+            <span style="font-weight: bold;display: block;margin-bottom: 0.375em;">{{ Girdi.on_taki }}&nbsp;{{ Girdi.madde }}, -{{Girdi.taki}}</span>
+        {% endif %}
+        {% for Anlam in Girdi.anlam %}
+            <div style="display: block;margin-bottom: 0.5em;">
+                {% if Girdi.anlam|length > 1 %}
+                    <span style="font-weight: bold;">{{ Anlam.anlam_sira }}.&nbsp;</span>
+                {% else %}
+                    <span style="text-indent: 1em;"></span>
+                {% endif %}
+                {% if Anlam.fiil %}
+                    <span style="display: inline-block;">[FİİL]&nbsp;</span>
+                {% endif %}
+                {% if Anlam.ozelliklerListe %}
+                    <span style="display: inline-block;font-style: italic;">[
+                        {% for Ozellik in Anlam.ozelliklerListe %}
+                            {{ "%s" % Ozellik if loop.last else "%s, " % Ozellik }}
+                        {% endfor %}
+                    ]</span>
+                {% endif %}
+                <span>
+                    {{ Anlam.anlam }}
+                </span>
+                {% if Anlam.orneklerListe %}
+                    <div style="display: block;">
+                        {% for _ornek in Anlam.orneklerListe %}
+                            <span style="display: block;margin-left: 1em;margin-right: 1em;margin-top: 0.5em;">▪ {{ _ornek.ornek }}</span>
+                            {% if _ornek.yazar %}
+                                <span style="display: block;margin-left: 1em;margin-right: 1em;margin-top: 0.5em;">— {{ _ornek.yazar }}</span>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        {% endfor %}
+        {% if Girdi.atasozu %}
+            <div style="display: block;margin-top: 0.5em;">
+                <span style="font-weight: bold;display: block;margin-bottom: 0.375em;">Atasözleri, Deyimler veya Birleşik Fiiller</span><br>
+                {% for a in Girdi.atasozu %}
+                    {{ "%s" % a if loop.last else "%s, " % a }}
+                {% endfor %}
+            </div>
+        {% endif %}
+        {% if Girdi.birlesikler %}
+            <div style="display: block;margin-top: 0.5em;">
+                <span style="font-weight: bold;display: block;margin-bottom: 0.375em;">Birleşik Kelimeler</span><br>
+                {% for a in Girdi.birlesikler %}
+                    {{ "%s" % a if loop.last else "%s, " % a }}
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+</div>

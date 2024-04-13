@@ -1,0 +1,70 @@
+<link rel="stylesheet" href="stardict_bicem.css">
+<div class="girdi">
+    <div class="ozellik">
+        {% if Girdi.telaffuz %}
+            <span class="okunus">/{{ Girdi.telaffuz }}/</span>
+        {% endif %}
+        {% if Girdi.lisan %}
+            <span class="dil">Kaynak: {{ Girdi.lisan }}</span>
+        {% endif %}
+        {% if Girdi.cogul_mu %}
+            <span class="cogul">[ÇOĞUL]&nbsp;</span>
+        {% endif %}
+        {% if Girdi.ozel_mi %}
+            <span class="ozel">[ÖZEL]</span>
+        {% endif %}
+    </div>
+    <div class="anlam">
+        {% if Girdi.on_taki or Girdi.taki %}
+            <span class="madde">{{ Girdi.on_taki }}&nbsp;{{ Girdi.madde }}, -{{Girdi.taki}}</span>
+        {% endif %}
+        {% for Anlam in Girdi.anlam %}
+            <div class="anlam-tekil">
+                {% if Girdi.anlam|length > 1 %}
+                    <span class="anlam-sira">{{ Anlam.anlam_sira }}.&nbsp;</span>
+                {% else %}
+                    <span class="girinti"></span>
+                {% endif %}
+                {% if Anlam.fiil %}
+                    <span class="eylem">[FİİL]&nbsp;</span>
+                {% endif %}
+                {% if Anlam.ozelliklerListe %}
+                    <span class="ozellik">[
+                        {% for Ozellik in Anlam.ozelliklerListe %}
+                            {{ "%s" % Ozellik if loop.last else "%s, " % Ozellik }}
+                        {% endfor %}
+                    ]</span>
+                {% endif %}
+                <span class="anlam">
+                    {{ Anlam.anlam_gonderme_baglantili }}
+                </span>
+                {% if Anlam.orneklerListe %}
+                    <div class="ornekler">
+                        {% for _ornek in Anlam.orneklerListe %}
+                            <span class="ornek">▪ {{ _ornek.ornek }}</span>
+                            {% if _ornek.yazar %}
+                                <span class="yazar">— {{ _ornek.yazar }}</span>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        {% endfor %}
+        {% if Girdi.atasozu %}
+            <div class="atasozu">
+                <span class="baslik">Atasözleri, Deyimler veya Birleşik Fiiller</span>
+                {% for a in Girdi.atasozu %}
+                    <span class="atasozu-baglanti">↗ <a class="atasozu" href="bword://{{a|HtmlEscape}}">{{a}}</a></span>
+                {% endfor %}
+            </div>
+        {% endif %}
+        {% if Girdi.birlesikler %}
+            <div class="birlesikler">
+                <span class="baslik">Birleşik Kelimeler</span>
+                {% for a in Girdi.birlesikler %}
+                    <span class="birlesikler-baglanti">↗ <a class="birlesikler" href="bword://{{a|HtmlEscape}}">{{a}}</a></span>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+</div>

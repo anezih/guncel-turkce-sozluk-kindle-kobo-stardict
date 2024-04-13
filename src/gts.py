@@ -4,7 +4,6 @@ import html
 import json
 import re
 import subprocess
-import sys
 import tarfile
 from datetime import datetime
 from enum import Enum
@@ -20,6 +19,9 @@ from spylls.hunspell.dictionary import Dictionary
 
 SURUM = (2, 4, 3)
 BETIK_DY = Path(__file__).resolve().parent
+
+def html_escape(metin: str) -> str:
+    return html.escape(metin)
 
 # https://github.com/anezih/add_inflections/blob/c58b98de4b65eff357427849533bb05139481806/add_inflections.py#L43
 class InflBase:
@@ -260,14 +262,15 @@ class Anlam:
         return int(self.anlam_sozluk["anlam_sira"])
 
     @cached_property
-    def fiil(self) -> str:
+    def fiil(self) -> bool:
         if self.anlam_sozluk["fiil"] == "1":
-            return "[FİİL]"
+            return True
+        return False
 
     @cached_property
     def ozelliklerListe(self) -> list[str]:
         ozellikler: list[str] = list()
-        if _ozelliklerListe:=self.anlam_sozluk["ozelliklerListe"]:
+        if _ozelliklerListe:=self.anlam_sozluk.get("ozelliklerListe"):
             for o in _ozelliklerListe:
                 ozellikler.append(o["tam_adi"])
         return ozellikler
@@ -306,7 +309,7 @@ class Anlam:
                 j,
                 f'<a href="bword://{html.escape(j)}">{j}</a>',
                 1
-            )
+            ).replace("► ","")
         return yeni_tanim
 
 class Girdi:
@@ -319,7 +322,9 @@ class Girdi:
 
     @property
     def anlam_html(self) -> str:
-        return self.tpl.render({"Girdi" : self})
+        html = self.tpl.render({"Girdi" : self}).replace("\n","")
+        html = re.sub(r"\s{2,}", " ", html)
+        return html
 
     @property
     def diger_bicimler(self) -> set[str]:
@@ -352,14 +357,16 @@ class Girdi:
         return self.duzeltme_imi(self.madde)
 
     @cached_property
-    def cogul_mu(self) -> str:
+    def cogul_mu(self) -> bool:
         if self.json_girdisi["cogul_mu"] == "1":
-            return "[ÇOĞUL]"
+            return True
+        return False
 
     @cached_property
-    def ozel_mi(self) -> str:
+    def ozel_mi(self) -> bool:
         if self.json_girdisi["ozel_mi"] == "1":
-            return "[ÖZEL]"
+            return True
+        return False
 
     @cached_property
     def lisan(self) -> str:
@@ -463,6 +470,7 @@ class GTS:
     def tpl(self) -> Template:
         env = Environment(loader=FileSystemLoader(BETIK_DY / "tpl"),
                           trim_blocks=True, lstrip_blocks=True, keep_trailing_newline=False)
+        env.filters["HtmlEscape"] = html_escape
         match self.cikti_secenegi:
             case CiktiSecenegi.StarDict:
                 return env.get_template("stardict.html.j2")
@@ -487,7 +495,7 @@ class GTS:
         def ekle(css_path: Path):
             glossary.addEntry(
                 glossary.newDataEntry(
-                    css_path.name, css_path.read_bytes
+                    css_path.name, css_path.read_bytes()
                 )
             )
         match self.cikti_secenegi:
@@ -556,6 +564,14 @@ class GTS:
         if not klasor.exists():
             klasor.mkdir()
         glossary.write(str(dosya_ismi), "Dictfile")
+        df_satirlar = dosya_ismi.read_text(encoding="utf-8").split("\n")
+        df_satirlar_yeni: list[str] = list()
+        for satir in df_satirlar:
+            if satir.startswith("@"):
+                df_satirlar_yeni.append(satir.replace("\"", "'"))
+            else:
+                df_satirlar_yeni.append(satir)
+        dosya_ismi.write_text("\n".join(df_satirlar_yeni), encoding="utf-8")
         subprocess.Popen(["dictgen-windows.exe", str(dosya_ismi),
                           "-o", str(klasor / "dicthtml-tr.zip")],
                           stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
