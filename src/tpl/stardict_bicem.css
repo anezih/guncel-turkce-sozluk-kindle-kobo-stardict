@@ -71,14 +71,10 @@ span.girinti {
 }
 
 span.ozellik {
-    display: inline-block;
+    display: inline;
     font-style: normal;
     color: #002BB3;
 }
-
-/* span.anlam {
-
-} */
 
 span.ornek {
     display: block;
@@ -107,14 +103,6 @@ span.birlesikler-baglanti {
 }
 
 a {
-    text-decoration: underline;
+    text-decoration: none;
     color: black;
-}
-
-a.atasozu {
-    text-decoration: none;
-}
-
-a.birlesikler {
-    text-decoration: none;
 }

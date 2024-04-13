@@ -99,7 +99,7 @@ span.ozellik::before {
 }
 
 span.ozellik::after {
-    content: "]";
+    content: "]\00A0";
     font-style: normal;
 }
 

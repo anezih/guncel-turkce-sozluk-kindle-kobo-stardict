@@ -254,8 +254,9 @@ class Ornek:
             return _yazar[0]["tam_adi"]
 
 class Anlam:
-    def __init__(self, anlam_sozluk: dict) -> None:
+    def __init__(self, anlam_sozluk: dict, bStarDict: bool = False) -> None:
         self.anlam_sozluk = anlam_sozluk
+        self.bStarDict = bStarDict
 
     @cached_property
     def anlam_sira(self) -> int:
@@ -289,6 +290,7 @@ class Anlam:
 
     @cached_property
     def anlam_gonderme_baglantili(self) -> str:
+        baglanti_simge = "↗" if self.bStarDict else ""
         res = re.search(r"(?:;|►|bk\.)\s?([^.:]+)", self.anlam)
         if not res:
             return self.anlam
@@ -307,18 +309,19 @@ class Anlam:
         for j in gonderme_yapilanlar:
             yeni_tanim = yeni_tanim.replace(
                 j,
-                f'<a href="bword://{html.escape(j)}">{j}</a>',
+                f'{baglanti_simge} <a href="bword://{html.escape(j)}">{j}</a>',
                 1
             ).replace("► ","")
         return yeni_tanim
 
 class Girdi:
     def __init__(self, json_girdisi: dict[str,str], duzeltme_imi: DuzeltmeImi,
-                 cekim_sozlukleri: CekimSozlukleri, tpl: Template) -> None:
+                 cekim_sozlukleri: CekimSozlukleri, tpl: Template, bStarDict: bool = False) -> None:
         self.json_girdisi = json_girdisi
         self.duzeltme_imi = duzeltme_imi
         self.cekim_sozlukleri = cekim_sozlukleri
         self.tpl = tpl
+        self.bStarDict = bStarDict
 
     @property
     def anlam_html(self) -> str:
@@ -401,7 +404,7 @@ class Girdi:
     def anlam(self) -> list[Anlam]:
         cikti: list[Anlam] = list()
         if _anlamlarListe:=self.json_girdisi.get("anlamlarListe"):
-            cikti = [Anlam(_anlamlar) for _anlamlar in _anlamlarListe]
+            cikti = [Anlam(_anlamlar, self.bStarDict) for _anlamlar in _anlamlarListe]
             cikti.sort(key=lambda x: x.anlam_sira)
         return cikti
 
@@ -420,6 +423,12 @@ class GTS:
         self.cekim_sozlukleri_bicimleri = cekim_sozlukleri_bicimleri
         self.hunspell_sozlukleri = hunspell_sozlukleri
         self.cikti_secenegi = CiktiSecenegi(cikti_secenegi)
+
+    @cached_property
+    def bStarDict(self) -> bool:
+        if self.cikti_secenegi == CiktiSecenegi.StarDict:
+            return True
+        return False
 
     @cached_property
     def InflDicts(self) -> list[InflBase]:
@@ -513,7 +522,8 @@ class GTS:
                 json_girdisi=x,
                 duzeltme_imi=self.DuzeltmeImi,
                 cekim_sozlukleri=self.CekimSozlukleri,
-                tpl=self.tpl
+                tpl=self.tpl,
+                bStarDict=self.bStarDict
             )
             for x in self.GtsJSON
         ]
@@ -548,6 +558,10 @@ class GTS:
         if not klasor.exists():
             klasor.mkdir()
         glossary.write(str(dosya_ismi), "Stardict", dictzip=False)
+        # koreader res/ klasöründeki css dosyasını okuyamıyor.
+        css_path = klasor / "res" / "stardict_bicem.css"
+        css_uste = klasor / f"{dosya_ismi.name}.css"
+        css_uste.write_text(css_path.read_text("utf-8"),"utf-8")
 
     def stardict_webkit(self) -> None:
         glossary = self.glossary()
