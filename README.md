@@ -1,6 +1,8 @@
 # Nedir?
 TDK Güncel Türkçe Sözlük gts.json.tar.gz dosyasını PyGlossary aracılığıyla StarDict, Kobo ve Kindle formatlarına çeviren bir Python betiği.
 
+[Kindle kullanıcıları, taklitlerinden sakının!](#çatallayamayanlar)
+
 # Kullanımı
 `python gts.py --help`
 ```
@@ -59,6 +61,13 @@ pip install spylls
 # Kobo sözlüğünü yükleme
 * Sözlüğü doğrudan `KOBOeReader/.kobo/custom-dict` konumuna kopyalayın.
 * Kaynak ve detaylı açıklama için [buraya](https://pgaskin.net/dictutil/dicthtml/install.html) başvurun.
+
+# Çatallayamayanlar
+https://github.com/bora-7/tdk-12-kindle/issues/1
+Bağlantıdaki kişi benim repomu çatallayıp kendi ürettiği veri dosyasıyla güncellemek (bu işi yapmanın düzgün yolu) yerine yarım ağızla eksik bir atıf yaptıktan sonra bir MOBI dosyası paylaşmış. Paylaştığı dosyayı üreten kaynak kod sorulduğunda utanıp repoyu sileceği yerde benim soruyu sorduğum issue'yu silmeyi seçmiş. 500 tane fazla sözcük görmek istiyorsanız o versiyonu indirebilirsiniz.
+
+Silinen issue'ya ait ekran görüntüsünü aşağıdadır.
+![](img/github.com_bora-7_tdk-12-kindle_issues_1.png)
 
 <details>
 <summary><h1>Ekran Görüntüleri (Eski)</h1></summary>
