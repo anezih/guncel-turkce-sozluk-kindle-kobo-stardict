@@ -53,6 +53,7 @@ Bu sürümde sözlükleri oluşturan betik tekrar en baştan yazıldı. Bunun ne
 
 # Gerekli paketler
 ```
+pip install Jinja2
 pip install pyglossary==4.6.1
 pip install spylls
 ```
