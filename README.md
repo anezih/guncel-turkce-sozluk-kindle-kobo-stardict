@@ -37,7 +37,7 @@ Tüm biçimleri üretmek için betiği Powershell üzerinde şu şekilde çağı
 ```
 
 `--cekim-sozlukleri` parametresi, var olan sözcük çekim bilgilerini hazırlanan sözlüğe ekleyebilmenizi sağlar. Bu parametreye çekim bilgileri olan StarDict sözlüklerinin yollarını gösterin. Birden fazla sözlük kullanılacaksa bunları boşluk ile ayırın. Bu parametrenin kullanılması durumunda `--cekim-sozlukleri-bicimleri`'nde kullandığınız sözlüklerin biçimini belirtin. Örnek:
-```
+```powershell
 python gts.py --cekim-sozlukleri "D:\sozlukler\kaynak_1.ifo" "D:\sozlukler\kaynak_2.ifo" --cekim-sozlukleri-bicimleri Stardict Stardict -b 1"
 ```
 
@@ -46,13 +46,13 @@ python gts.py --cekim-sozlukleri "D:\sozlukler\kaynak_1.ifo" "D:\sozlukler\kayna
 2.4.3 sürümünde sözlük biçimlendirmesi StarDict'de ayrı css dosyasına taşınmıştır. Ancak KOReader yazılımının sözlük görüntüleyici arka ucu (MuPDF) HTML4 ve eşleniği CSS sürümü ötesinde görüntüleme yapamadığından StarDict sürümü basit ve biraz daha karmaşık CSS'li olmaz üzere ikiye ayrılmıştır. Sonunda *WebKit olan sürüm, görüntüleyici olarak WebKit veya daha modern bir arka uç kullanan yazılımlar içindir (Örneğin GoldenDict veya KOReader dşındaki her şey.)
 
 ## Kindle MOBI biçimi
-2.4.2 sürümünde yer alan tanım içinde alan HTML bağlantılara yer verilmemiştir. Bu bağlantıların çalışıp çalışmadığını fiziki cihaz üzerinde deneyemediğimden bağlantıları bu sürüme dahil etmedim. 2.4.2 sürümünü deneyip, çalıştığını biri onaylayabilirse bu özellik tekrardan eklenebilir.
+2.4.2 sürümünde tanım içinde yer alan HTML bağlantılara 2.4.3'de yer verilmemiştir. Bu bağlantıların çalışıp çalışmadığını fiziki cihaz üzerinde deneyemediğimden bağlantıları bu sürüme dahil etmedim. 2.4.2 sürümünü deneyip, çalıştığını biri onaylayabilirse bu özellik tekrardan eklenebilir.
 
 ## Biçimlendirme esnekliği
 Bu sürümde sözlükleri oluşturan betik tekrar en baştan yazıldı. Bunun nedeni biçimlendirmeyi olabilidiğince koddan ayırmak ve kolaylaştırmak. Bu aynı zamanda biçimlendirmeyi son kullanıcı açısından da daha kişiselleştirilebilir kılıyor. Eğer HTML ve CSS biliyorsanız. `tpl/` klasöründe yer alan dosyaları düzenledikten sonra betiği yeniden çalıştırarak tanım görünümlerini değiştirebilirsiniz. StarDict biçiminde programı yeniden çalıştırmaya gerek kalmadan sadece CSS dosyasını düzenlemek ise yeterli.
 
 # Gerekli paketler
-```
+```powershell
 pip install Jinja2
 pip install pyglossary==4.6.1
 pip install spylls
