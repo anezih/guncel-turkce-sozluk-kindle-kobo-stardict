@@ -561,7 +561,9 @@ class GTS:
         # koreader res/ klasöründeki css dosyasını okuyamıyor.
         css_path = klasor / "res" / "stardict_bicem.css"
         css_uste = klasor / f"{dosya_ismi.name}.css"
-        css_uste.write_text(css_path.read_text("utf-8"),"utf-8")
+        css_uste.write_text(css_path.read_text("utf-8"), "utf-8")
+        # boox res/ klasöründeki css dosyasını okuyamıyor, css ismini aynı tutarak üst klasöre kopyalayalım.
+        (klasor / css_path.name).write_text(css_path.read_text("utf-8"), "utf-8")
 
     def stardict_webkit(self) -> None:
         glossary = self.glossary()
