@@ -2,6 +2,7 @@ import argparse
 import gzip
 import html
 import json
+import platform
 import re
 import subprocess
 import tarfile
@@ -430,6 +431,25 @@ class GTS:
             return True
         return False
 
+    @property
+    def platform_uygun_dictgen_ismi(self) -> str:
+        """
+        Çalıştırılabilir dosyaları edinmek için: https://github.com/pgaskin/dictutil/releases
+        """
+        # x86 dosyaları uyumluluk katmanıyla arm işlemcide çalışıyor mu ve kontrol yapmalı mıyız?
+        if platform.system() == "Darwin":
+            return "dictgen-darwin-64bit"
+        if platform.system() == "Windows":
+            return "dictgen-windows.exe"
+        if platform.system() == "Linux":
+            if platform.machine().startswith("arm") or platform.machine().startswith("aarch"):
+                return "dictgen-linux-arm"
+            if platform.machine() in ["x86_64", "AMD64"]:
+                return "dictgen-linux-64bit"
+            # Belki 32bit kontrolü de yapabiliriz.
+            raise Exception("[!] Sistem beklenmeyen bir mimari üzerinde çalışıyor.")
+        raise Exception("[!] Betik bilinmeyen bir işletim sistemi üzerinde çalıştırılıyor.")
+
     @cached_property
     def InflDicts(self) -> list[InflBase]:
         infl_dicts: list[InflBase] = list()
@@ -557,7 +577,7 @@ class GTS:
         dosya_ismi = klasor / self.cikti_klasoru_ismi
         if not klasor.exists():
             klasor.mkdir()
-        glossary.write(str(dosya_ismi), "Stardict", dictzip=False)
+        glossary.write(filename=str(dosya_ismi), formatName="Stardict", dictzip=False)
         # koreader res/ klasöründeki css dosyasını okuyamıyor.
         css_path = klasor / "res" / "stardict_bicem.css"
         css_uste = klasor / f"{dosya_ismi.name}.css"
@@ -571,7 +591,7 @@ class GTS:
         dosya_ismi = klasor / self.cikti_klasoru_ismi
         if not klasor.exists():
             klasor.mkdir()
-        glossary.write(str(dosya_ismi), "Stardict", dictzip=False)
+        glossary.write(filename=str(dosya_ismi), formatName="Stardict", dictzip=False)
 
     def kobo(self) -> None:
         glossary = self.glossary()
@@ -579,7 +599,7 @@ class GTS:
         dosya_ismi = klasor / f"{self.cikti_klasoru_ismi}.df"
         if not klasor.exists():
             klasor.mkdir()
-        glossary.write(str(dosya_ismi), "Dictfile")
+        glossary.write(filename=str(dosya_ismi), formatName="Dictfile")
         df_satirlar = dosya_ismi.read_text(encoding="utf-8").split("\n")
         df_satirlar_yeni: list[str] = list()
         for satir in df_satirlar:
@@ -588,7 +608,7 @@ class GTS:
             else:
                 df_satirlar_yeni.append(satir)
         dosya_ismi.write_text("\n".join(df_satirlar_yeni), encoding="utf-8")
-        subprocess.Popen(["dictgen-windows.exe", str(dosya_ismi),
+        subprocess.Popen([self.platform_uygun_dictgen_ismi, str(dosya_ismi),
                           "-o", str(klasor / "dicthtml-tr.zip")],
                           stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
 
@@ -598,7 +618,7 @@ class GTS:
         dosya_ismi = klasor / self.cikti_klasoru_ismi
         if not klasor.exists():
             klasor.mkdir()
-        glossary.write(str(dosya_ismi), "Mobi", kindlegen_path="kindlegen")
+        glossary.write(filename=str(dosya_ismi), formatName="Mobi", kindlegen_path="kindlegen")
         mobi_dosya_yolu = dosya_ismi / "OEBPS" / "content.mobi"
         if mobi_dosya_yolu.exists():
             mobi_dosya_yolu.replace(klasor / f"{self.cikti_klasoru_ismi}.mobi")

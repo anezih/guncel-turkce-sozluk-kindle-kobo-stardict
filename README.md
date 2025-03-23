@@ -41,6 +41,10 @@ Tüm biçimleri üretmek için betiği Powershell üzerinde şu şekilde çağı
 python gts.py --cekim-sozlukleri "D:\sozlukler\kaynak_1.ifo" "D:\sozlukler\kaynak_2.ifo" --cekim-sozlukleri-bicimleri Stardict Stardict -b 1"
 ```
 
+Kindle sürümünün üretilebilmesi için `kindlegen` çalıştırılabilir dosyasının PATH'de olması gereklidir. [Archive.org bağlantısı](https://web.archive.org/web/20190817070956/https://www.amazon.com/gp/feature.html?docId=1000765211).
+
+Kobo sürümünün üretilebilmesi için işletim sisteminize uygun `dictgen-*` dosyasının PATH'de olması gereklidir. İlgili dosyaların [GitHub reposu](https://github.com/pgaskin/dictutil/releases).
+
 # 2.4.3 sürümü hakkında notlar
 ## İki tane olan StarDict biçimi hakkında<br>
 2.4.3 sürümünde sözlük biçimlendirmesi StarDict'de ayrı css dosyasına taşınmıştır. Ancak KOReader yazılımının sözlük görüntüleyici arka ucu (MuPDF) HTML4 ve eşleniği CSS sürümü ötesinde görüntüleme yapamadığından StarDict sürümü basit ve biraz daha karmaşık CSS'li olmaz üzere ikiye ayrılmıştır. Sonunda *WebKit olan sürüm, görüntüleyici olarak WebKit veya daha modern bir arka uç kullanan yazılımlar içindir (Örneğin GoldenDict veya KOReader dşındaki her şey.)
@@ -54,7 +58,7 @@ Bu sürümde sözlükleri oluşturan betik tekrar en baştan yazıldı. Bunun ne
 # Gerekli paketler
 ```powershell
 pip install Jinja2
-pip install pyglossary==4.6.1
+pip install pyglossary
 pip install spylls
 ```
 # Kobo sözlüğünü yükleme
