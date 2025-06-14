@@ -11,6 +11,7 @@ from enum import Enum
 from functools import cached_property
 from itertools import zip_longest
 from pathlib import Path
+from shutil import which
 
 from jinja2 import Environment, FileSystemLoader, Template
 from pyglossary.glossary_v2 import Glossary
@@ -431,7 +432,7 @@ class GTS:
             return True
         return False
 
-    @property
+    @cached_property
     def platform_uygun_dictgen_ismi(self) -> str:
         """
         Çalıştırılabilir dosyaları edinmek için: https://github.com/pgaskin/dictutil/releases
@@ -608,6 +609,11 @@ class GTS:
             else:
                 df_satirlar_yeni.append(satir)
         dosya_ismi.write_text("\n".join(df_satirlar_yeni), encoding="utf-8")
+        if not which(self.platform_uygun_dictgen_ismi):
+            raise Exception(
+                "[!] Kobo biçim dönüşümünü yapacak çalıştırılabilir dosya PATH'de bulunamadı. " \
+                "Dosyanın PATH'de bulunabilir olduğundan emin olun. " \
+                "Dosyaları edinmek için https://github.com/pgaskin/dictutil/releases adresine başvurun.")
         subprocess.Popen([self.platform_uygun_dictgen_ismi, str(dosya_ismi),
                           "-o", str(klasor / "dicthtml-tr.zip")],
                           stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
