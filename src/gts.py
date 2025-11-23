@@ -3,6 +3,7 @@ import gzip
 import html
 import json
 import platform
+import os
 import re
 import subprocess
 import tarfile
@@ -21,6 +22,15 @@ from spylls.hunspell.dictionary import Dictionary
 
 SURUM = (2, 4, 3)
 BETIK_DY = Path(__file__).resolve().parent
+
+def which_ex(cmd: str) -> str:
+    path = os.environ.get("PATH", os.defpath)
+    cwd = Path.cwd()
+    arama_dizini = f"{path}{os.pathsep}{cwd}"
+    sonuc = which(cmd=cmd, path=arama_dizini)
+    if not sonuc:
+        return sonuc
+    return str(Path(sonuc).resolve())
 
 def html_escape(metin: str) -> str:
     return html.escape(metin)
@@ -609,12 +619,15 @@ class GTS:
             else:
                 df_satirlar_yeni.append(satir)
         dosya_ismi.write_text("\n".join(df_satirlar_yeni), encoding="utf-8")
-        if not which(self.platform_uygun_dictgen_ismi):
+
+        dictgen_yolu = which_ex(self.platform_uygun_dictgen_ismi)
+        if not dictgen_yolu:
             raise Exception(
-                "[!] Kobo biçim dönüşümünü yapacak çalıştırılabilir dosya PATH'de bulunamadı. " \
-                "Dosyanın PATH'de bulunabilir olduğundan emin olun. " \
+                "[!] Kobo biçim dönüşümünü yapacak çalıştırılabilir dosya PATH'de ve betiğin olduğu klasörde bulunamadı. " \
+                "Dosyanın PATH'de veya betiğin çalıştığı klasörde bulunabilir olduğundan emin olun. " \
                 "Dosyaları edinmek için https://github.com/pgaskin/dictutil/releases adresine başvurun.")
-        subprocess.Popen([self.platform_uygun_dictgen_ismi, str(dosya_ismi),
+
+        subprocess.Popen([dictgen_yolu, str(dosya_ismi),
                           "-o", str(klasor / "dicthtml-tr.zip")],
                           stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
 
@@ -624,7 +637,13 @@ class GTS:
         dosya_ismi = klasor / self.cikti_klasoru_ismi
         if not klasor.exists():
             klasor.mkdir()
-        glossary.write(filename=str(dosya_ismi), formatName="Mobi", kindlegen_path="kindlegen")
+        kindlegen_yolu = which_ex("kindlegen")
+        if not kindlegen_yolu:
+            raise Exception(
+                "[!] Kindle MOBI dönüşümünü yapacak çalıştırılabilir dosya (kindlegen) PATH'de ve betiğin olduğu klasörde bulunamadı. " \
+                "Dosyanın PATH'de veya betiğin çalıştığı klasörde bulunabilir olduğundan emin olun. " \
+                "Dosyaları edinmek için https://web.archive.org/web/20190817070956/https://www.amazon.com/gp/feature.html?docId=1000765211 adresine başvurun.")
+        glossary.write(filename=str(dosya_ismi), formatName="Mobi", kindlegen_path=kindlegen_yolu)
         mobi_dosya_yolu = dosya_ismi / "OEBPS" / "content.mobi"
         if mobi_dosya_yolu.exists():
             mobi_dosya_yolu.replace(klasor / f"{self.cikti_klasoru_ismi}.mobi")

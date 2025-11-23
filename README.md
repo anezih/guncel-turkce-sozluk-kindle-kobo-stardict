@@ -62,7 +62,7 @@ pip install pyglossary
 pip install spylls
 ```
 # Kobo sözlüğünü yükleme
-* Sözlüğü doğrudan `KOBOeReader/.kobo/custom-dict` konumuna kopyalayın.
+* Sözlüğü (zip dosyasını) doğrudan `KOBOeReader/.kobo/custom-dict` konumuna kopyalayın.
 * Kaynak ve detaylı açıklama için [buraya](https://pgaskin.net/dictutil/dicthtml/install.html) başvurun.
 
 <details>
